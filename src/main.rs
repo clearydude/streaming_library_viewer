@@ -1,8 +1,5 @@
-mod controller;
-mod view;
-
 use glutin::dpi::LogicalSize;
-
+use glutin::event::{Event, WindowEvent};
 use glutin::event_loop::{ControlFlow, EventLoop};
 use glutin::window::WindowBuilder;
 use glutin::ContextBuilder;
@@ -26,16 +23,28 @@ fn main() {
     let windowed_context = unsafe { windowed_context.make_current().unwrap() };
 
     // initialize opengl
-    let _gl = gl::load_with(|ptr| windowed_context.get_proc_address(ptr) as *const _);
+    let _ = gl::load_with(|ptr| windowed_context.get_proc_address(ptr) as *const _);
 
     // here's our event loop
     el.run(move |event, _, control_flow| {
         // println!("{:?}", event);
         *control_flow = ControlFlow::Wait;
 
-        controller::process_events(&windowed_context, event, control_flow);
+        // process input
+        match event {
+            Event::LoopDestroyed => return,
+            Event::WindowEvent { event, .. } => match event {
+                WindowEvent::Resized(physical_size) => windowed_context.resize(physical_size),
+                WindowEvent::CloseRequested => *control_flow = ControlFlow::Exit,
+                _ => (),
+            },
+            Event::RedrawRequested(_) => {}
+            _ => (),
+        }
 
-        view::render();
+        // render
+        unsafe { gl::ClearColor(0.2, 0.3, 0.3, 1.0) }
+        unsafe { gl::Clear(gl::COLOR_BUFFER_BIT) }
 
         windowed_context.swap_buffers().unwrap();
     });
