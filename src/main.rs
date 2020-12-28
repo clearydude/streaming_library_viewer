@@ -1,6 +1,7 @@
 use crate::view::GlutinLibraryViewer;
 use glutin::event_loop::{ControlFlow, EventLoop};
 
+mod models;
 mod view;
 
 fn main() {
