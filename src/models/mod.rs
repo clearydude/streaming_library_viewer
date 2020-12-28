@@ -1,3 +1,5 @@
+mod streaming_library_service;
+
 /// A a streamable video.
 struct VideoModel {
     /// The representation in bytes of the title's image.
