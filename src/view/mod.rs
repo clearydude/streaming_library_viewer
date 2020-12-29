@@ -70,7 +70,7 @@ impl GlutinLibraryViewer {
             (VirtualKeyCode::Right, ElementState::Pressed) => self.model.next_title(),
             (VirtualKeyCode::Up, ElementState::Pressed) => self.model.previous_collection(),
             (VirtualKeyCode::Down, ElementState::Pressed) => self.model.next_collection(),
-            (VirtualKeyCode::Return, ElementState::Pressed) => self.model.current_title(),
+            // (VirtualKeyCode::Return, ElementState::Pressed) => self.model.current_title(),
             _ => (),
         }
     }

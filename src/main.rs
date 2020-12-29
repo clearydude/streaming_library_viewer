@@ -15,7 +15,6 @@ fn main() {
     let view = GlutinLibraryViewer::new(&el, Box::new(model));
 
     el.run(move |event, _, control_flow| {
-        //         println!("{:?}", event);
         *control_flow = ControlFlow::Wait;
 
         view.update(event, control_flow);
