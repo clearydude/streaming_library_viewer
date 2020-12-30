@@ -1,4 +1,5 @@
-// mod streaming_library_service;
+
+mod streaming_library_service;
 
 /// A a streamable video.
 #[derive(Debug, PartialEq)]
@@ -162,7 +163,9 @@ mod tests {
         );
     }
 
+    // Comment this out for now because I'm thinking stateful is a bad way to go
     #[test]
+    #[ignore]
     fn next_video_advances_current_selection() {
         // Given a library with some collections and videos
         let library = get_populated_library();
