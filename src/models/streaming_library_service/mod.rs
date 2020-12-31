@@ -30,7 +30,7 @@ mod tests {
             let ref_type = &possible_collections[i]["set"]["refType"];
 
             if !ref_id.is_null() {
-                println!("Title: {:?}, id {}, ref type {:#?}", title, i, ref_type);
+                println!("{}", title);
 
                 let data = reqwest::blocking::get(&get_ref_url(
                     ref_id.as_str().expect("Couldn't convert refid to string"),
@@ -51,12 +51,12 @@ mod tests {
                     let title = &possible_titles[i]["text"]["title"]["full"]["series"]["default"]
                         ["content"];
                     if !title.is_null() {
-                        println!("\ttitle {:?}", title);
+                        println!("\t{}", title);
                     } else {
                         let title = &possible_titles[i]["text"]["title"]["full"]["program"]
                             ["default"]["content"];
                         if !title.is_null() {
-                            println!("\ttitle {:?}", title);
+                            println!("\t{}", title);
                         }
                     }
                 }
