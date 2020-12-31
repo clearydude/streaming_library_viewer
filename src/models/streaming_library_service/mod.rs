@@ -18,23 +18,50 @@ mod tests {
 
     #[test]
     fn gets_all_collections() {
-        // data.StandardCollection.containers[4..12].set.refId
         let data = reqwest::blocking::get(HOME_URL).unwrap().text().unwrap();
         let json: Value = serde_json::from_str(&data).unwrap();
-        let ref_id = &json["data"]["StandardCollection"]["containers"][4]["set"]["refId"];
+        let possible_collections = &json["data"]["StandardCollection"]["containers"];
 
-        //        println!("json: {}", json);
-        println!("ref id: {:#?}", ref_id);
+        // TODO need to allow 4 again when I fix BecauseYouSet stuff
+        for i in 5..possible_collections.as_array().unwrap().len() {
+            let title = &possible_collections[i]["set"]["text"]["title"]["full"]["set"]["default"]
+                ["content"];
+            let ref_id = &possible_collections[i]["set"]["refId"];
+            let ref_type = &possible_collections[i]["set"]["refType"];
 
-        let data = reqwest::blocking::get(&get_ref_url(ref_id.as_str().unwrap()))
-            .unwrap()
-            .text()
-            .unwrap();
-        let json: Value = serde_json::from_str(&data).unwrap();
-        let title = &json["data"]["CuratedSet"]["items"][9]["text"]["title"]["full"]["series"]
-            ["default"]["content"];
+            if !ref_id.is_null() {
+                println!("Title: {:?}, id {}, ref type {:#?}", title, i, ref_type);
 
-        println!("title {:?}", title);
+                let data = reqwest::blocking::get(&get_ref_url(
+                    ref_id.as_str().expect("Couldn't convert refid to string"),
+                ))
+                .expect("Couldn't get")
+                .text()
+                .expect("no text section");
+                let json: Value = serde_json::from_str(&data).expect("Couldn't get json");
+
+                let possible_titles = &json["data"][ref_type.as_str().unwrap()]["items"];
+
+                for i in 0..possible_titles
+                    .as_array()
+                    .expect("Couldn't get array")
+                    .len()
+                {
+                    // ugh might be program instead of series
+                    let title = &possible_titles[i]["text"]["title"]["full"]["series"]["default"]
+                        ["content"];
+                    if !title.is_null() {
+                        println!("\ttitle {:?}", title);
+                    } else {
+                        let title = &possible_titles[i]["text"]["title"]["full"]["program"]
+                            ["default"]["content"];
+                        if !title.is_null() {
+                            println!("\ttitle {:?}", title);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     #[test]
